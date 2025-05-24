@@ -2,3 +2,5 @@
 .venv
 .cursor
 .idea
+
+.env
