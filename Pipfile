@@ -6,6 +6,12 @@ name = "pypi"
 [packages]
 streamlit = "*"
 dotenv = "*"
+faiss-cpu = "*"
+sentence-transformers = "*"
+einops = "*" # required for nomic-ai model
+nomic = {extras = ["local"], version = "*"}
+numpy = "*"
+openai = "*"
 
 [dev-packages]
 
