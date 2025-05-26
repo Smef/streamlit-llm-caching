@@ -25,7 +25,7 @@ class LlmService:
 
     cache_hit_count = 0
 
-    def __init__(self, json_file='../tmp/cache.json'):
+    def __init__(self):
 
         if self.index is None:
             self.index = faiss.IndexFlatL2(self.dimensions)
