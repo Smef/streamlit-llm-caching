@@ -21,31 +21,36 @@ class LlmService:
         api_key=os.getenv("OPENAI_API_KEY"),
     )
 
+    index = None
+
+    cache_hit_count = 0
+
     def __init__(self, json_file='../tmp/cache.json'):
 
-        self.index = faiss.IndexFlatL2(self.dimensions)
+        if self.index is None:
+            self.index = faiss.IndexFlatL2(self.dimensions)
 
-        example_query = "What is the capital of France?"
+            example_query = "What is the capital of France?"
 
-        embedding_array = self.embed_query(example_query)
+            embedding_array = self.embed_query(example_query)
 
-        self.index.add(embedding_array)
-        self.cache.append('Paris')
+            self.index.add(embedding_array)
+            self.cache.append('Paris')
 
-        example_query = "What is the capital of Canada?"
+            example_query = "What is the capital of Canada?"
 
-        embedding_array = self.embed_query(example_query)
+            embedding_array = self.embed_query(example_query)
 
-        self.index.add(embedding_array)
-        self.cache.append('Ottowa')
+            self.index.add(embedding_array)
+            self.cache.append('Ottowa')
 
 
-        example_query = "What is the capital of Germany?"
+            example_query = "What is the capital of Germany?"
 
-        embedding_array = self.embed_query(example_query)
+            embedding_array = self.embed_query(example_query)
 
-        self.index.add(embedding_array)
-        self.cache.append('Munich')
+            self.index.add(embedding_array)
+            self.cache.append('Munich')
 
 
 
@@ -58,9 +63,8 @@ class LlmService:
 
     # cache an entry
     def add_answer_to_cache(self, answer_str: str, query_embedding: np.array):
-
-
         self.index.add(query_embedding)
+        self.cache.append(answer_str)
 
 
     def query(self, query_string):
@@ -142,5 +146,9 @@ class LlmService:
         closest_match_answer = self.cache[closest_match_index]
 
         print("Cache hit!")
+        self.cache_hit_count += 1
 
         return closest_match_answer
+
+    def get_cache_hit_count(self):
+        return self.cache_hit_count
