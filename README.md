@@ -10,6 +10,10 @@ Install dependencies with pipenv
 pipenv install
 ```
 
+## Set up env
+Copy `.env.example` to `.env` and set your OpenAI API key.
+
+## Run the app in Streamlit
 Run streamlit with:
 
 ```sh
