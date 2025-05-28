@@ -6,6 +6,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 from .Router import route_query
+from .DocumentQuery import search_document
 
 
 load_dotenv()
@@ -111,12 +112,16 @@ class LlmService:
         print(f"📝 Reason: {reason}")
         print(f"⚙️ Processing query...{RESET}\n")
 
-        if action == "INTERNET_QUERY":
-            # get one from the LLM
-            response = self.query_llm_for_answer(query_string)
-            answer = response.output_text
-        if action == "10K_DOCUMENT_QUERY":
-            answer = "Access through document database"
+        routes = {
+            "OPENAI_QUERY": self.query_llm_for_answer,
+            "10K_DOCUMENT_QUERY": search_document,
+        }
+
+        route_function = routes.get(action)  # Find the function to use for this route
+        if route_function:
+            answer = route_function(query_string)  # Run the function with the user's input
+        else:
+            answer = f"Unsupported action: {action}"  # Catch unknown routing types
 
 
         # store the answer in the cache
