@@ -1,6 +1,10 @@
+import sys
 import os
-import streamlit as st
-from LlmService import LlmService
+
+sys.path.append(
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
+from ..app.LlmService import LlmService
 
 # initialize LLM service
 
