@@ -1,6 +1,6 @@
 import streamlit as st
-from LlmService import LlmService
-from Chat import Chat
+from app.LlmService import LlmService
+from app.Chat import Chat
 
 
 st.title('LLM Service')

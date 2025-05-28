@@ -1,11 +1,12 @@
 import faiss
-from sentence_transformers import SentenceTransformer
-from nomic import embed
-import numpy as np
-from openai import OpenAI
 import os
-
+import numpy as np
+from nomic import embed
+from openai import OpenAI
 from dotenv import load_dotenv
+
+from .Router import route_query
+
 
 load_dotenv()
 
@@ -85,10 +86,38 @@ class LlmService:
 
         # we didn't find an answer
 
-        # get one from the LLM
-        response = self.query_llm_for_answer(query_string)
+        #  Terminal color codes to make the printed output easier to read and visually structured
+        CYAN = "\033[96m"
+        GREY = "\033[90m"
+        BOLD = "\033[1m"
+        RESET = "\033[0m"
 
-        answer = response.output_text
+
+        # figure out where we need to route the query
+        try:
+            response = route_query(query_string)
+        except Exception as route_err:
+            # If something goes wrong while classifying the query, show an error message
+            print(f"{BOLD}{CYAN}🤖 BOT RESPONSE:{RESET}\n")
+            print(f"Routing error: {route_err}\n")
+            return
+
+        # Extract the routing decision and the reason behind it
+        action = response.get("action")  # e.g., "OPENAI_QUERY"
+        reason = response.get("reason")  # e.g., "Related to OpenAI tools"
+
+        # Step 3: Show the selected route and why it was chosen
+        print(f"{GREY}📍 Selected Route: {action}")
+        print(f"📝 Reason: {reason}")
+        print(f"⚙️ Processing query...{RESET}\n")
+
+        if action == "INTERNET_QUERY":
+            # get one from the LLM
+            response = self.query_llm_for_answer(query_string)
+            answer = response.output_text
+        if action == "10K_DOCUMENT_QUERY":
+            answer = "Access through document database"
+
 
         # store the answer in the cache
         self.add_answer_to_cache(answer, query_embedding_array)
