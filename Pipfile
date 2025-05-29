@@ -12,6 +12,7 @@ einops = "*" # required for nomic-ai model
 nomic = {extras = ["local"], version = "*"}
 numpy = "*"
 openai = "*"
+qdrant-client = "*"
 
 [dev-packages]
 

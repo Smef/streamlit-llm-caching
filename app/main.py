@@ -1,26 +1,30 @@
 import streamlit as st
-from app.LlmService import LlmService
+
+# import setup first to get dotenv running
+import app.setup
+from app.Agent import Agent
 from app.Chat import Chat
+
 
 
 st.title('LLM Service')
 
 
-# initialize Chat service
+# initialize Chat agent
 if 'chat'  in st.session_state:
     chat = st.session_state['chat']
 else:
-    # Set up chat service
+    # Set up chat agent
     chat = Chat()
     st.session_state['chat'] = chat
 
 
-# initialize LLM service
-if 'service'  in st.session_state:
-    service = st.session_state['service']
+# initialize Agent
+if 'agent'  in st.session_state:
+    agent = st.session_state['agent']
 else:
-    service = LlmService()
-    st.session_state['service'] = service
+    agent = Agent()
+    st.session_state['agent'] = agent
 
 # initialize cache hit counter
 if 'cache_hit_count' not in st.session_state:
@@ -30,9 +34,9 @@ if 'cache_hit_count' not in st.session_state:
 def perform_query(query_string = None):
     query_string = st.session_state.query
     chat.add_chat_history('user', query_string)
-    answer = service.query(query_string)
+    answer = agent.query(query_string)
     chat.add_chat_history('assistant', answer)
-    st.session_state.cache_hit_count = service.get_cache_hit_count()
+    st.session_state.cache_hit_count = agent.get_cache_hit_count()
 
 chat_history = chat.get_chat_history()
 

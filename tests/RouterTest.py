@@ -1,17 +1,23 @@
 import sys
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 sys.path.append(
     os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 )
 
-from app.Router import route_query
+from app.Agent import Agent
 
 # initialize LLM service
 
 
-query = "What is the revenue of Lyft?"
+query = "Where can I find the latest financial reports for the last 10 years?"
 
-result = route_query(query)
+agent = Agent()
+
+result = agent.route_query(query)
 
 print(result)
