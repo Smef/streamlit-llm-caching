@@ -1,11 +1,12 @@
+import os
 from qdrant_client import QdrantClient   # Qdrant is used as the vector store to retrieve documents based on similarity
 from app.LlmService import LlmService
 
 
 def search_document(query_string, query_embedding_array):
-
-    client = QdrantClient(path="/Users/smef/Code/Personal/ai-agent-course/streamlit-llm-caching/database/qdrant_data")
-
+    # Construct path relative to current file location
+    db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database", "qdrant_data")
+    client = QdrantClient(path=db_path)
 
     # default to just the 10k docs
     action = '10K_DOCUMENT_QUERY'
